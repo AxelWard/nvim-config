@@ -1,44 +1,44 @@
-local lsp = require('lsp-zero')
-
-lsp.preset('recommended')
-
-lsp.ensure_installed({
-  'tsserver',
-  'eslint',
-  'rust_analyzer'
-})
-
 local cmp = require('cmp')
-local cmp_select = {behavior = cmp.SelectBehavior.Select}
-local cmp_mappings = lsp.defaults.cmp_mappings({
+local cmp_select = { behavior = cmp.SelectBehavior.Select }
+local cmp_mappings = cmp.mapping.preset.insert({
   ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
   ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
   ['<C-y>'] = cmp.mapping.confirm({ select = true }),
   ['<C-Space>'] = cmp.mapping.complete()
 })
 
-lsp.set_preferences({
-  sign_icons = { }
-})
-
-lsp.setup_nvim_cmp({
+cmp.setup({
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+  },
+  snippit = {
+    expand = function(args)
+      vim.snippet.expand(args.body)
+    end,
+  },
   mapping = cmp_mappings
 })
 
+require('mason').setup({})
+require("mason-lspconfig").setup({
+  ensure_installed = { "lua_ls", "zls" },
+  handlers = {
+    function(server_name)
+      require('lspconfig')[server_name].setup({})
+    end,
 
-lsp.on_attach(function(client, bufnr)
-  local opts = {buffer = bufnr, remap = false}
+  }
+})
 
-  vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
-  vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
-  vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
-  vim.keymap.set("n", "<leader>vd", function() vim.lsp.buf.open_float() end, opts)
-  vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
-  vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-  vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
-  vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
-  vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
-  vim.keymap.set("n", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-end)
-
-lsp.setup()
+require("lspconfig").zls.setup({
+  settings = {
+    zls = {
+      path = os.getenv("ZIG_HOME"),
+    }
+  }
+})
+-- a zls.json file in the project can fix std lib import failures
+-- {
+--   "zig_lib_path" : "/home/axel/.zig/zig-linux-x86_64-0.13.0/lib/"
+-- }

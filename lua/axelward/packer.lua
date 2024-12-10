@@ -1,56 +1,71 @@
-vim.cmd [[packadd packer.nvim]]
+local function bootstrap_pckr()
+  local pckr_path = vim.fn.stdpath("data") .. "/pckr/pckr.nvim"
 
-return require('packer').startup(function(use)
-  -- Packer can manage itself
-  use 'wbthomason/packer.nvim'
-  
-  use {
-    'nvim-telescope/telescope.nvim', tag = "0.1.0",
-    requires = { {'nvim-lua/plenary.nvim'} }
-  }
+  if not (vim.uv or vim.loop).fs_stat(pckr_path) then
+    vim.fn.system({
+      'git',
+      'clone',
+      "--filter=blob:none",
+      'https://github.com/lewis6991/pckr.nvim',
+      pckr_path
+    })
+  end
 
-  use ({
+  vim.opt.rtp:prepend(pckr_path)
+end
+
+bootstrap_pckr()
+
+require('pckr').add {
+  'f-person/git-blame.nvim',
+  {
+    'nvim-treesitter/nvim-treesitter',
+    run = function()
+      local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+      ts_update()
+    end,
+  },
+  {
+    'nvim-telescope/telescope.nvim',
+    tag = "0.1.8",
+    requires = { 'nvim-lua/plenary.nvim' }
+  },
+  {
     'marko-cerovac/material.nvim',
     config = function()
       vim.cmd('colorscheme material')
     end
-  })
-
-  use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
-
-  use {
-    'VonHeikemen/lsp-zero.nvim',
-    branch = 'v2.x',
+  },
+  -- LSP Support
+  'neovim/nvim-lspconfig',
+  -- Autocompletion
+  'hrsh7th/nvim-cmp',
+  'hrsh7th/cmp-nvim-lsp',
+  'hrsh7th/cmp-buffer',
+  -- Mason
+  {
+    'williamboman/mason.nvim',
+    run = function()
+      pcall(vim.api.nvim_command, 'MasonUpdate')
+    end,
+  },
+  'williamboman/mason-lspconfig.nvim',
+  {
+    'scalameta/nvim-metals',
     requires = {
-      -- LSP Support
-      {'neovim/nvim-lspconfig'},             -- Required
-      {                                      -- Optional
-        'williamboman/mason.nvim',
-        run = function()
-          pcall(vim.api.nvim_command, 'MasonUpdate')
-        end,
-      },
-      {'williamboman/mason-lspconfig.nvim'}, -- Optional
-
-      -- Autocompletion
-      {'hrsh7th/nvim-cmp'},     -- Required
-      {'hrsh7th/cmp-nvim-lsp'}, -- Required
-      {'L3MON4D3/LuaSnip'},     -- Required
+      'nvim-lua/plenary.nvim',
+      'hrsh7th/nvim-cmp',
     }
-  }
-
-  use({'scalameta/nvim-metals', requires = {'nvim-lua/plenary.nvim'}})
-
-  use({
+  },
+  {
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     as = 'lsp_lines',
     config = function()
       require("lsp_lines").setup()
     end
-  })
-
-  use({'ThePrimeagen/harpoon', requires = {'nvim-lua/plenary.nvim'}})
-
-  use('f-person/git-blame.nvim', {})
-
-end)
+  },
+  {
+    'ThePrimeagen/harpoon',
+    requires = { 'nvim-lua/plenary.nvim' }
+  },
+}

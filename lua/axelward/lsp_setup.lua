@@ -1,18 +1,18 @@
-local buffer_autoformat = function(bufnr)
-  local group = 'lsp_autoformat'
-  vim.api.nvim_create_augroup(group, {clear = false})
-  vim.api.nvim_clear_autocmds({group = group, buffer = bufnr})
-
-  vim.api.nvim_create_autocmd('BufWritePre', {
-    buffer = bufnr,
-    group = group,
-    desc = 'LSP format on save',
-    callback = function()
-      -- note: do not enable async formatting
-      vim.lsp.buf.format({async = false, timeout_ms = 10000})
-    end,
-  })
-end
+-- local buffer_autoformat = function(bufnr)
+--   local group = 'lsp_autoformat'
+--   vim.api.nvim_create_augroup(group, {clear = false})
+--   vim.api.nvim_clear_autocmds({group = group, buffer = bufnr})
+--
+--   vim.api.nvim_create_autocmd('BufWritePre', {
+--     buffer = bufnr,
+--     group = group,
+--     desc = 'LSP format on save',
+--     callback = function()
+--       -- note: do not enable async formatting
+--       vim.lsp.buf.format({async = false, timeout_ms = 10000})
+--     end,
+--   })
+-- end
 
 vim.diagnostic.config({
   signs = false,
@@ -32,16 +32,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
     vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
     vim.keymap.set("n", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+    -- local id = vim.tbl_get(event, 'data', 'client_id')
+    -- local client = id and vim.lsp.get_client_by_id(id)
+    -- if client == nil then
+    --   return
+    -- end
 
-    local id = vim.tbl_get(event, 'data', 'client_id')
-    local client = id and vim.lsp.get_client_by_id(id)
-    if client == nil then
-      return
-    end
-
-    -- make sure there is at least one client with formatting capabilities
-    if client.supports_method('textDocument/formatting') then
-      buffer_autoformat(event.buf)
-    end
+    -- -- make sure there is at least one client with formatting capabilities
+    -- if client.supports_method('textDocument/formatting') then
+    --   buffer_autoformat(event.buf)
+    -- end
   end
 })

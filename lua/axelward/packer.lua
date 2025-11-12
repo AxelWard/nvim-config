@@ -68,4 +68,12 @@ require('pckr').add {
     'ThePrimeagen/harpoon',
     requires = { 'nvim-lua/plenary.nvim' }
   },
+  {
+    'sindrets/diffview.nvim',
+    config = function()
+      require("diffview").setup({
+        use_icons = false
+      })
+    end
+  }
 }

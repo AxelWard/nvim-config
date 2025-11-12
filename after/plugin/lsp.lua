@@ -22,23 +22,11 @@ cmp.setup({
 
 require('mason').setup({})
 require("mason-lspconfig").setup({
-  ensure_installed = { "lua_ls", "zls" },
+  ensure_installed = { "lua_ls", "zls", "angularls@15.2.1", "ts_ls", "html", "cssls" },
   handlers = {
     function(server_name)
-      require('lspconfig')[server_name].setup({})
+      vim.lsp.enable(server_name)
     end,
 
   }
 })
-
-require("lspconfig").zls.setup({
-  settings = {
-    zls = {
-      path = os.getenv("ZIG_HOME"),
-    }
-  }
-})
--- a zls.json file in the project can fix std lib import failures
--- {
---   "zig_lib_path" : "/home/axel/.zig/zig-linux-x86_64-0.13.0/lib/"
--- }

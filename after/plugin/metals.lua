@@ -5,8 +5,8 @@ metals_config.settings = {
   showImplicitArguments = true,
   excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
   autoImportBuild = "all",
-  serverVersion = '1.5.3',
-  serverProperties = { '-Xmx4G' }--, -"Dmetals.loglevel=debug", "-Dmetals.statistics=all", "XX:+UseParallelGC" }
+  serverVersion = '1.6.4',
+  serverProperties = { '-Xmx4G' }
 }
 
 metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()

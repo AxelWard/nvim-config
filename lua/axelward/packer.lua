@@ -75,5 +75,8 @@ require('pckr').add {
         use_icons = false
       })
     end
-  }
+  },
+  {
+    "ellisonleao/glow.nvim", config = function () require("glow").setup() end
+  },
 }

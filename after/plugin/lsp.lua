@@ -19,14 +19,3 @@ cmp.setup({
   },
   mapping = cmp_mappings
 })
-
-require('mason').setup({})
-require("mason-lspconfig").setup({
-  ensure_installed = { "lua_ls", "zls", "angularls@15.2.1", "ts_ls", "html", "cssls" },
-  handlers = {
-    function(server_name)
-      vim.lsp.enable(server_name)
-    end,
-
-  }
-})

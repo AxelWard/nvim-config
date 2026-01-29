@@ -1,5 +1,5 @@
-require'nvim-treesitter.configs'.setup {
-  -- A list of parser names, or "all" (the five listed parsers should always be installed)
+require'nvim-treesitter'.setup {
+  install_dir = vim.fn.stdpath('data') .. '/site',
   ensure_installed = {
     "typescript",
     "javascript",
@@ -14,15 +14,11 @@ require'nvim-treesitter.configs'.setup {
     "scala",
     "java",
     "sql",
-    "c", "lua", "vim", "vimdoc", "query"
-  },
+    "c",
+    "lua",
+    "vim",
+    "vimdoc",
+    "zig"
 
-  sync_install = false,
-
-  auto_install = true,
-
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = false,
-  },
+  }
 }
